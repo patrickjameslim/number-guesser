@@ -31,18 +31,36 @@ guessButton.addEventListener('click', function() {
 
   if(isNaN(guess) || guess < min || guess > max) {
     setMessage(`Please enter a number between ${min} and ${max}.`, 'red');
-  }
-
-  // Check if won
-  if(guess === winningNum) {
-    //Disable input
-    guessInput.disabled = true;
-    guessInput.style.borderColor = 'green';
-    setMessage(`Congratulations! ${winningNum} is correct!`, 'green');
   } else {
-
+    // Check if won
+    if(guess === winningNum) {
+      // Game over - won
+      gameOver(true, `${winningNum} is correct. You win!`);
+    } else {
+        guessesLeft -= 1;
+        if(guessesLeft === 1) {
+          setMessage(`Wrong number. You have ${guessesLeft} guess left.`, 'red');
+        } if(guessesLeft === 0) {
+          gameOver(false, `Game over. The correct number is ${winningNum}`);
+        } else {
+          setMessage(`Wrong number. You have ${guessesLeft} guesses left.`, 'red');
+        }
+    }
   }
 });
+
+// Game over
+function gameOver(won, msg) {
+  let color;
+  won === true ? color = 'green' : color = 'red';
+  guessInput.style.borderColor = color;
+  guessInput.disabled = true;
+  message.style.color = color;
+  setMessage(msg);
+
+  guessButton.value = 'Play Again';
+  guessButton.className += 'play-again';
+}
 
 // Set message function
 function setMessage(error, color) {
